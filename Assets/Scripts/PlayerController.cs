@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class PlayerController : MonoBehaviour
     public int maxHealth = 500;
     public int currentHealth;
     public Image healthBarImage;
+    public GameObject isDead;
+    public GameObject deadText;
 
     [Header("XP")]
     public int toLevelUp = 100;
@@ -71,6 +74,9 @@ public class PlayerController : MonoBehaviour
             transform.position = new Vector2(transform.position.x, -yRange);
         }
     }
+
+
+
     public void UpdateHealthBar()
     {
         float fillValue = (float)currentHealth / maxHealth;
@@ -80,10 +86,25 @@ public class PlayerController : MonoBehaviour
     {
         currentHealth -= damage;
         UpdateHealthBar();
+        if (currentHealth <= 0)
+        {
+            panim.SetTrigger("Die");
+            isDead.SetActive(true);
+            deadText.SetActive(true);
+            Invoke("RestartGame", 2f);
+        }
     }
+    void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+
+
     public void GainXP(int xp)
     {
         currentXP += xp;
+        UpdateXPBar();
         if (currentXP >= toLevelUp)
         {
             currentXP = 0;
@@ -91,6 +112,8 @@ public class PlayerController : MonoBehaviour
     }
     public void UpdateXPBar()
     {
-
+        float fillValue = (float)currentXP / toLevelUp;
+        fullXPBar.fillAmount = fillValue;
+        emptyXPBar.fillAmount = 1 - fillValue;
     }
 }
