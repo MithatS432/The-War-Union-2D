@@ -2,15 +2,28 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    private Rigidbody2D erb;
+
+    public GameObject target;
+    public float moveSpeed = 3f;
+
+    public float health = 20f;
+    public float damage = 100f;
+
     void Start()
     {
-
+        erb = GetComponent<Rigidbody2D>();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-
+        if (target == null) return;
+        Vector2 direction = (target.transform.position - transform.position).normalized;
+        Vector2 newPos = (Vector2)transform.position + direction * moveSpeed * Time.fixedDeltaTime;
+        erb.MovePosition(newPos);
     }
+
+
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -18,8 +31,17 @@ public class Enemy : MonoBehaviour
             PlayerController player = Object.FindAnyObjectByType<PlayerController>();
             if (player != null)
             {
-                player.GetDamage(500);
+                player.GetDamage((int)damage);
+                Destroy(gameObject);
             }
+        }
+    }
+    public void GetDamage(int damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            Destroy(gameObject);
         }
     }
 }

@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Animator panim;
     private SpriteRenderer psr;
+    private AudioSource audioSource;
 
     public float moveSpeed;
     private float hinput;
@@ -15,25 +16,45 @@ public class PlayerController : MonoBehaviour
     private float xRange = -16.2f, yRange = -16.7f;
 
     [Header("Health")]
-    public int maxHealth = 500;
-    public int currentHealth;
+    private int maxHealth = 500;
+    private int currentHealth;
     public Image healthBarImage;
     public GameObject isDead;
     public GameObject deadText;
 
     [Header("XP")]
-    public int toLevelUp = 100;
-    public int currentXP = 0;
+    private int toLevelUp = 100;
+    private int currentXP = 0;
     public Image emptyXPBar;
     public Image fullXPBar;
+
+    [Header("Attack")]
+    public GameObject auraPrefab;
+    private float attackCooldown = 1f;
+    private float attackTimer = 0f;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         panim = GetComponent<Animator>();
         psr = GetComponent<SpriteRenderer>();
+        audioSource = GetComponent<AudioSource>();
         currentHealth = maxHealth;
         UpdateHealthBar();
+    }
+    private void Update()
+    {
+        attackTimer += Time.deltaTime;
+        if (attackTimer >= attackCooldown)
+        {
+            Attack();
+            attackTimer = 0f;
+        }
+    }
+    void Attack()
+    {
+        GameObject aura = Instantiate(auraPrefab, transform.position, Quaternion.identity);
+        Destroy(aura, 0.5f);
     }
     private void FixedUpdate()
     {
@@ -85,6 +106,7 @@ public class PlayerController : MonoBehaviour
     public void GetDamage(int damage)
     {
         currentHealth -= damage;
+        audioSource.Play();
         UpdateHealthBar();
         if (currentHealth <= 0)
         {
