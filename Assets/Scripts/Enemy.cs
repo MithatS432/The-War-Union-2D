@@ -8,7 +8,7 @@ public class Enemy : MonoBehaviour
     public float moveSpeed = 3f;
 
     public float health = 20f;
-    public float damage = 100f;
+    public float damage = 10f;
 
     void Start()
     {
@@ -18,9 +18,9 @@ public class Enemy : MonoBehaviour
     private void FixedUpdate()
     {
         if (target == null) return;
+
         Vector2 direction = (target.transform.position - transform.position).normalized;
-        Vector2 newPos = (Vector2)transform.position + direction * moveSpeed * Time.fixedDeltaTime;
-        erb.MovePosition(newPos);
+        erb.linearVelocity = direction * moveSpeed;
     }
 
 
