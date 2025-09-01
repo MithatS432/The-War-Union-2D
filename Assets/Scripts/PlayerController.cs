@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     public Image healthBarImage;
     public GameObject isDead;
     public GameObject deadText;
+    public GameObject restartButton;
 
     [Header("XP")]
     private int toLevelUp = 100;
@@ -30,7 +31,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Attack")]
     public GameObject auraPrefab;
-    private float attackCooldown = 1f;
+    private float attackCooldown = 3f;
     private float attackTimer = 0f;
 
     void Start()
@@ -54,7 +55,7 @@ public class PlayerController : MonoBehaviour
     void Attack()
     {
         GameObject aura = Instantiate(auraPrefab, transform.position, Quaternion.identity);
-        Destroy(aura, 0.5f);
+        Destroy(aura, 1f);
     }
     private void FixedUpdate()
     {
@@ -113,7 +114,11 @@ public class PlayerController : MonoBehaviour
             panim.SetTrigger("Die");
             isDead.SetActive(true);
             deadText.SetActive(true);
-            Invoke("RestartGame", 2f);
+            restartButton.SetActive(true);
+            if (restartButton.GetComponent<Button>() != null)
+            {
+                restartButton.GetComponent<Button>().onClick.AddListener(RestartGame);
+            }
         }
     }
     void RestartGame()

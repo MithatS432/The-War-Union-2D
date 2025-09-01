@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour
 
     public float health = 20f;
     public float damage = 10f;
+    public float xpValue = 30f;
 
     void Start()
     {
@@ -21,6 +22,12 @@ public class Enemy : MonoBehaviour
 
         Vector2 direction = (target.transform.position - transform.position).normalized;
         erb.linearVelocity = direction * moveSpeed;
+        if (direction.x != 0)
+        {
+            Vector3 localScale = transform.localScale;
+            localScale.x = Mathf.Sign(direction.x) * Mathf.Abs(localScale.x);
+            transform.localScale = localScale;
+        }
     }
 
 
@@ -42,6 +49,11 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             Destroy(gameObject);
+            PlayerController player = Object.FindAnyObjectByType<PlayerController>();
+            if (player != null)
+            {
+                player.GainXP((int)xpValue);
+            }
         }
     }
 }
