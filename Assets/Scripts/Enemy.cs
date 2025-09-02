@@ -1,10 +1,14 @@
 using UnityEngine;
+using System.Collections;
 
 public class Enemy : MonoBehaviour
 {
     private Rigidbody2D erb;
+    private Animator eanim;
+    private AudioSource eAudio;
 
     public GameObject target;
+    public GameObject bloodEffectPrefab;
     public float moveSpeed = 3f;
 
     public float health = 20f;
@@ -14,6 +18,8 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         erb = GetComponent<Rigidbody2D>();
+        eanim = GetComponent<Animator>();
+        eAudio = GetComponent<AudioSource>();
     }
 
     private void FixedUpdate()
@@ -48,12 +54,25 @@ public class Enemy : MonoBehaviour
         health -= damage;
         if (health <= 0)
         {
-            Destroy(gameObject);
-            PlayerController player = Object.FindAnyObjectByType<PlayerController>();
-            if (player != null)
-            {
-                player.GainXP((int)xpValue);
-            }
+            eanim.SetTrigger("Die");
+            eAudio.Play();
+            GameObject bloodEffect = Instantiate(bloodEffectPrefab, transform.position, Quaternion.identity);
+            Destroy(bloodEffect, 2.5f);
+
+            this.enabled = false;
+            StartCoroutine(DieAfterDelay(1f));
         }
     }
+
+    private IEnumerator DieAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        PlayerController player = Object.FindAnyObjectByType<PlayerController>();
+        if (player != null)
+        {
+            player.GainXP((int)xpValue);
+        }
+        Destroy(gameObject);
+    }
+
 }
