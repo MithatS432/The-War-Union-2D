@@ -58,7 +58,6 @@ public class Enemy : MonoBehaviour
             eAudio.Play();
             GameObject bloodEffect = Instantiate(bloodEffectPrefab, transform.position, Quaternion.identity);
             Destroy(bloodEffect, 2.5f);
-
             this.enabled = false;
             StartCoroutine(DieAfterDelay(1f));
         }

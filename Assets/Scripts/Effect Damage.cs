@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EffectDamage : MonoBehaviour
 {
-    private int damage = 10;
+    public int damage = 10;
 
     private void OnTriggerEnter2D(Collider2D other)
     {

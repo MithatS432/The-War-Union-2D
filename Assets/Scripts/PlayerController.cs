@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -28,6 +29,10 @@ public class PlayerController : MonoBehaviour
     private int currentXP = 0;
     public Image emptyXPBar;
     public Image fullXPBar;
+    public TextMeshProUGUI levelUpText;
+    private int currentLevel = 1;
+    public Button damageLevelButton;
+    public Button healthLevelButton;
 
     [Header("Attack")]
     public GameObject auraPrefab;
@@ -42,7 +47,9 @@ public class PlayerController : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         currentHealth = maxHealth;
         UpdateHealthBar();
+        levelUpText.text = "Level: " + currentLevel;
     }
+
     private void Update()
     {
         attackTimer += Time.deltaTime;
@@ -52,95 +59,151 @@ public class PlayerController : MonoBehaviour
             attackTimer = 0f;
         }
     }
+
     void Attack()
     {
         GameObject aura = Instantiate(auraPrefab, transform.position, Quaternion.identity);
+
+        EffectDamage effectDamage = aura.GetComponent<EffectDamage>();
+        if (effectDamage != null)
+        {
+            effectDamage.damage = GetComponent<EffectDamage>() != null ? GetComponent<EffectDamage>().damage : effectDamage.damage;
+        }
+
         Destroy(aura, 1f);
     }
+
     private void FixedUpdate()
     {
         hinput = Input.GetAxis("Horizontal");
         vinput = Input.GetAxis("Vertical");
         rb.MovePosition(rb.position + new Vector2(hinput, vinput) * moveSpeed * Time.fixedDeltaTime);
+
         panim.SetFloat("Speed", Mathf.Abs(hinput) + Mathf.Abs(vinput));
         Flip();
         PositionReset();
     }
+
     void Flip()
     {
         if (hinput > 0)
-        {
             psr.flipX = false;
-        }
         else if (hinput < 0)
-        {
             psr.flipX = true;
-        }
     }
+
     void PositionReset()
     {
         if (transform.position.x < xRange)
-        {
             transform.position = new Vector2(xRange, transform.position.y);
-        }
         else if (transform.position.x > -xRange)
-        {
             transform.position = new Vector2(-xRange, transform.position.y);
-        }
+
         if (transform.position.y < yRange)
-        {
             transform.position = new Vector2(transform.position.x, yRange);
-        }
         else if (transform.position.y > -yRange)
-        {
             transform.position = new Vector2(transform.position.x, -yRange);
-        }
     }
 
-
-
+    // ---------------- HEALTH ----------------
     public void UpdateHealthBar()
     {
         float fillValue = (float)currentHealth / maxHealth;
         healthBarImage.fillAmount = fillValue;
     }
+
     public void GetDamage(int damage)
     {
         currentHealth -= damage;
         audioSource.Play();
         UpdateHealthBar();
+
         if (currentHealth <= 0)
         {
             panim.SetTrigger("Die");
             isDead.SetActive(true);
             deadText.SetActive(true);
             restartButton.SetActive(true);
+
             if (restartButton.GetComponent<Button>() != null)
             {
+                restartButton.GetComponent<Button>().onClick.RemoveAllListeners();
                 restartButton.GetComponent<Button>().onClick.AddListener(RestartGame);
             }
         }
     }
+
     void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-
-
+    // ---------------- XP & LEVEL ----------------
     public void GainXP(int xp)
     {
         currentXP += xp;
         UpdateXPBar();
+
         if (currentXP >= toLevelUp)
         {
             currentXP = 0;
+            LevelUp();
         }
     }
+
     public void UpdateXPBar()
     {
         float fillValue = (float)currentXP / toLevelUp;
         fullXPBar.fillAmount = fillValue;
         emptyXPBar.fillAmount = 1 - fillValue;
+    }
+
+    public void LevelUp()
+    {
+        currentLevel++;
+        toLevelUp += 50;
+        currentXP = 0;
+        UpdateXPBar();
+
+        levelUpText.text = "Level: " + currentLevel;
+        Time.timeScale = 0;
+
+        damageLevelButton.gameObject.SetActive(true);
+        healthLevelButton.gameObject.SetActive(true);
+
+        damageLevelButton.onClick.RemoveAllListeners();
+        healthLevelButton.onClick.RemoveAllListeners();
+
+        damageLevelButton.onClick.AddListener(UpgradeDamage);
+        healthLevelButton.onClick.AddListener(UpgradeHealth);
+    }
+
+    public void LevelUpComplete()
+    {
+        Time.timeScale = 1;
+    }
+
+    public void UpgradeDamage()
+    {
+        EffectDamage effectDamage = GetComponent<EffectDamage>();
+        if (effectDamage != null)
+        {
+            effectDamage.damage += 10;
+        }
+
+        damageLevelButton.gameObject.SetActive(false);
+        healthLevelButton.gameObject.SetActive(false);
+
+        LevelUpComplete();
+    }
+
+    public void UpgradeHealth()
+    {
+        maxHealth += 50;
+        currentHealth = maxHealth;
+        UpdateHealthBar();
+        damageLevelButton.gameObject.SetActive(false);
+        healthLevelButton.gameObject.SetActive(false);
+        LevelUpComplete();
     }
 }
