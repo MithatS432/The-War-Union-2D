@@ -94,16 +94,13 @@ public class PlayerController : MonoBehaviour
 
     void PositionReset()
     {
-        if (transform.position.x < xRange)
-            transform.position = new Vector2(xRange, transform.position.y);
-        else if (transform.position.x > -xRange)
-            transform.position = new Vector2(-xRange, transform.position.y);
+        float clampedX = Mathf.Clamp(transform.position.x, xRange, -xRange);
+        float clampedY = Mathf.Clamp(transform.position.y, yRange, -yRange);
 
-        if (transform.position.y < yRange)
-            transform.position = new Vector2(transform.position.x, yRange);
-        else if (transform.position.y > -yRange)
-            transform.position = new Vector2(transform.position.x, -yRange);
+        transform.position = new Vector2(clampedX, clampedY);
     }
+
+
 
     // ---------------- HEALTH ----------------
     public void UpdateHealthBar()
@@ -138,6 +135,9 @@ public class PlayerController : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
+
+
+
     // ---------------- XP & LEVEL ----------------
     public void GainXP(int xp)
     {
@@ -168,15 +168,89 @@ public class PlayerController : MonoBehaviour
         levelUpText.text = "Level: " + currentLevel;
         Time.timeScale = 0;
 
-        damageLevelButton.gameObject.SetActive(true);
-        healthLevelButton.gameObject.SetActive(true);
+        // Tüm butonları başta kapatalım
+        damageLevelButton.gameObject.SetActive(false);
+        healthLevelButton.gameObject.SetActive(false);
 
         damageLevelButton.onClick.RemoveAllListeners();
         healthLevelButton.onClick.RemoveAllListeners();
 
-        damageLevelButton.onClick.AddListener(UpgradeDamage);
-        healthLevelButton.onClick.AddListener(UpgradeHealth);
+        switch (currentLevel)
+        {
+            case 2:
+                damageLevelButton.gameObject.SetActive(true);
+                healthLevelButton.gameObject.SetActive(true);
+                damageLevelButton.GetComponentInChildren<TextMeshProUGUI>().text = "Damage +10";
+                healthLevelButton.GetComponentInChildren<TextMeshProUGUI>().text = "Max Health +50";
+                damageLevelButton.onClick.AddListener(UpgradeDamage);
+                healthLevelButton.onClick.AddListener(UpgradeHealth);
+                break;
+
+            case 3:
+                damageLevelButton.gameObject.SetActive(true);
+                healthLevelButton.gameObject.SetActive(true);
+                damageLevelButton.GetComponentInChildren<TextMeshProUGUI>().text = "Move Speed +1";
+                healthLevelButton.GetComponentInChildren<TextMeshProUGUI>().text = "Lightning Damage";
+                damageLevelButton.onClick.AddListener(UpgradeSpeed);
+                healthLevelButton.onClick.AddListener(AddLightningDamage);
+                break;
+
+            case 4:
+                damageLevelButton.gameObject.SetActive(true);
+                healthLevelButton.gameObject.SetActive(true);
+                damageLevelButton.GetComponentInChildren<TextMeshProUGUI>().text = "Max Health +50";
+                healthLevelButton.GetComponentInChildren<TextMeshProUGUI>().text = "Move Speed +1";
+                damageLevelButton.onClick.AddListener(UpgradeHealth);
+                healthLevelButton.onClick.AddListener(UpgradeSpeed);
+                break;
+
+            case 5:
+                damageLevelButton.gameObject.SetActive(true);
+                healthLevelButton.gameObject.SetActive(true);
+                damageLevelButton.GetComponentInChildren<TextMeshProUGUI>().text = "Fire Damage";
+                healthLevelButton.GetComponentInChildren<TextMeshProUGUI>().text = "Ice Damage";
+                damageLevelButton.onClick.AddListener(AddFireDamage);
+                healthLevelButton.onClick.AddListener(AddIceDamage);
+                break;
+
+            default:
+                LevelUpComplete();
+                break;
+        }
     }
+
+    // Yeni metodlar
+    public void UpgradeSpeed()
+    {
+        moveSpeed += 1f;
+        CloseLevelUpUI();
+    }
+
+    public void AddLightningDamage()
+    {
+        Debug.Log("⚡ Lightning damage added! (Burada prefab bağlayabilirsin)");
+        CloseLevelUpUI();
+    }
+
+    public void AddFireDamage()
+    {
+        Debug.Log("🔥 Fire damage added!");
+        CloseLevelUpUI();
+    }
+
+    public void AddIceDamage()
+    {
+        Debug.Log("❄ Ice damage added with slow!");
+        CloseLevelUpUI();
+    }
+
+    private void CloseLevelUpUI()
+    {
+        damageLevelButton.gameObject.SetActive(false);
+        healthLevelButton.gameObject.SetActive(false);
+        LevelUpComplete();
+    }
+
 
     public void LevelUpComplete()
     {
@@ -193,7 +267,6 @@ public class PlayerController : MonoBehaviour
 
         damageLevelButton.gameObject.SetActive(false);
         healthLevelButton.gameObject.SetActive(false);
-
         LevelUpComplete();
     }
 

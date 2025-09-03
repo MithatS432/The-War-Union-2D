@@ -3061,6 +3061,11 @@ MonoBehaviour:
   - {fileID: 8764133019109122882, guid: 1c1872d2c594625478d002320b080af7, type: 3}
   - {fileID: 1145700126299968304, guid: 00975697356640442bc835b146431575, type: 3}
   - {fileID: 8512365558397817480, guid: 28d310e78c2b52e41b2b29e9fc3742a9, type: 3}
+  - {fileID: 2861594943805767478, guid: 72f5efbebc495724c8f736ed4a9ba7e7, type: 3}
+  - {fileID: 2861594943805767478, guid: 72f5efbebc495724c8f736ed4a9ba7e7, type: 3}
+  - {fileID: 2861594943805767478, guid: 72f5efbebc495724c8f736ed4a9ba7e7, type: 3}
+  - {fileID: 8764133019109122882, guid: 1c1872d2c594625478d002320b080af7, type: 3}
+  - {fileID: 8764133019109122882, guid: 1c1872d2c594625478d002320b080af7, type: 3}
   spawners:
   - {fileID: 133399894}
   - {fileID: 513464011}
@@ -5554,8 +5559,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4278201087
+  m_fontColor: {r: 1, g: 0.16435783, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5572,8 +5577,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 18.75
+  m_fontSizeBase: 18.75
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -6197,8 +6202,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4278201087
+  m_fontColor: {r: 1, g: 0.16435783, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -6215,8 +6220,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24.12
-  m_fontSizeBase: 24.12
+  m_fontSize: 18.75
+  m_fontSizeBase: 18.75
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
