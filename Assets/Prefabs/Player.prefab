@@ -203,9 +203,16 @@ MonoBehaviour:
   healthBarImage: {fileID: 0}
   isDead: {fileID: 0}
   deadText: {fileID: 0}
+  restartButton: {fileID: 0}
   emptyXPBar: {fileID: 0}
   fullXPBar: {fileID: 0}
+  levelUpText: {fileID: 0}
+  damageLevelButton: {fileID: 0}
+  healthLevelButton: {fileID: 0}
   auraPrefab: {fileID: 283780450289927162, guid: 159ac1b0053ecd544a431d9874711769, type: 3}
+  lightningPrefab: {fileID: 281345678356411855, guid: 45fb7097fc0fb2c4fa1cfe3d9c46c082, type: 3}
+  firePrefab: {fileID: 2803637683479585483, guid: 33b8601581d56ed468784b1cf113bc05, type: 3}
+  icePrefab: {fileID: 1538707559610438737, guid: ba82e6e418a6bf84ba87aef2bd08d83a, type: 3}
 --- !u!82 &2177859923688667677
 AudioSource:
   m_ObjectHideFlags: 0

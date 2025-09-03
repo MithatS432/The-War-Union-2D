@@ -36,6 +36,9 @@ public class PlayerController : MonoBehaviour
 
     [Header("Attack")]
     public GameObject auraPrefab;
+    public ParticleSystem lightningPrefab;
+    public GameObject firePrefab;
+    public GameObject icePrefab;
     private float attackCooldown = 3f;
     private float attackTimer = 0f;
 
@@ -64,14 +67,48 @@ public class PlayerController : MonoBehaviour
     {
         GameObject aura = Instantiate(auraPrefab, transform.position, Quaternion.identity);
 
-        EffectDamage effectDamage = aura.GetComponent<EffectDamage>();
-        if (effectDamage != null)
+        EffectDamage auraDamage = aura.GetComponent<EffectDamage>();
+        if (auraDamage != null)
         {
-            effectDamage.damage = GetComponent<EffectDamage>() != null ? GetComponent<EffectDamage>().damage : effectDamage.damage;
+            auraDamage.damage = GetComponent<EffectDamage>() != null ? GetComponent<EffectDamage>().damage : auraDamage.damage;
         }
 
         Destroy(aura, 1f);
+
+        if (currentLevel >= 3 && lightningPrefab != null)
+        {
+            GameObject lightning = Instantiate(lightningPrefab.gameObject, transform.position, Quaternion.identity);
+            EffectDamage lightningDamage = lightning.GetComponent<EffectDamage>();
+            if (lightningDamage != null)
+                lightningDamage.damage = GetComponent<EffectDamage>() != null ? GetComponent<EffectDamage>().damage : lightningDamage.damage;
+
+            Destroy(lightning, 3f);
+        }
+
+        // Level 5 ve üstü: Fire & Ice
+        if (currentLevel >= 5)
+        {
+            if (firePrefab != null)
+            {
+                GameObject fire = Instantiate(firePrefab, transform.position, Quaternion.identity);
+                EffectDamage fireDamage = fire.GetComponent<EffectDamage>();
+                if (fireDamage != null)
+                    fireDamage.damage = GetComponent<EffectDamage>() != null ? GetComponent<EffectDamage>().damage : fireDamage.damage;
+                Destroy(fire, 3f);
+            }
+
+            if (icePrefab != null)
+            {
+                GameObject ice = Instantiate(icePrefab, transform.position, Quaternion.identity);
+                EffectDamage iceDamage = ice.GetComponent<EffectDamage>();
+                if (iceDamage != null)
+                    iceDamage.damage = GetComponent<EffectDamage>() != null ? GetComponent<EffectDamage>().damage : iceDamage.damage;
+                Destroy(ice, 3f);
+            }
+        }
     }
+
+
 
     private void FixedUpdate()
     {
@@ -228,19 +265,22 @@ public class PlayerController : MonoBehaviour
 
     public void AddLightningDamage()
     {
-        Debug.Log("⚡ Lightning damage added! (Burada prefab bağlayabilirsin)");
+        ParticleSystem lightning = Instantiate(lightningPrefab, transform.position, Quaternion.identity);
+        Destroy(lightning.gameObject, 1f);
         CloseLevelUpUI();
     }
 
     public void AddFireDamage()
     {
-        Debug.Log("🔥 Fire damage added!");
+        GameObject fire = Instantiate(firePrefab, transform.position, Quaternion.identity);
+        Destroy(fire, 1f);
         CloseLevelUpUI();
     }
 
     public void AddIceDamage()
     {
-        Debug.Log("❄ Ice damage added with slow!");
+        GameObject ice = Instantiate(icePrefab, transform.position, Quaternion.identity);
+        Destroy(ice, 1f);
         CloseLevelUpUI();
     }
 
